@@ -19,6 +19,9 @@ export class UserService {
     }
 
     async getUser(id: number) {
+
+        await this.verifyUser(id);
+
         return this.prisma.user.findUnique({
             where: {
                 id
@@ -71,7 +74,11 @@ export class UserService {
     }
 
     async verifyUser(id: number) {
-        if(!(await this.getUser(id))){
+        if(!(await this.prisma.user.count({
+            where: {
+                id
+            }
+        }))){
             throw new NotFoundException(`O usuário com o id ${id} não existe.`)
         }
     }
